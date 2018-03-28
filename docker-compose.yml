@@ -41,6 +41,11 @@ services:
         command: ping -c 1 rt3 
         depends_on:
             - rt3
+    tn1:
+        image: baseimage:latest
+        networks:
+            - tnet1
+        command: "bash -c 'echo \"- interfetele de retea:\" && ip addr && echo \"- gateway:\" && ip route show'"
 
 networks:
     tnet2:
@@ -49,3 +54,9 @@ networks:
             config:
                 - subnet:  1.2.0.1/17
                   gateway: 1.2.3.4
+    tnet1:
+        ipam:
+            driver: default
+            config:
+                - subnet:  1.3.5.1/30
+                  gateway: 1.3.5.1
