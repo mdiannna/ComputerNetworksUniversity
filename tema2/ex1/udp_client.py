@@ -34,12 +34,11 @@ sentNumbers = []
 
 def sendNumber(i):
     # logging.info("")
-    sentNumbers.append(i);
     try:
         mesaj = "hello " + str(i);
         logging.info('Trimitem mesajul "%d" catre %s', i, adresa)
-       
-
+    
+        sentNumbers.append(i);
         sent = sock.sendto(mesaj, server_address)
     except:
         logging.error("Send error")
@@ -81,11 +80,11 @@ class waitForConfirmation(threading.Thread):
                 print confirmedNumbers
 
                 
-
-                if number>max_number or ((window_end >= max_number) and len(confirmedNumbers) == max_number):
-                    logging.info('All numbers received:')
-                    print confirmedNumbers
-                    return
+                # if number>max_number or ((window_end >= max_number) and len(confirmedNumbers) == max_number):
+                #     logging.info('All numbers received:')
+                #     print confirmedNumbers
+                #     return
+               
 
                 # if(number in confirmedNumbers):
 
@@ -106,6 +105,11 @@ class waitForConfirmation(threading.Thread):
                     
                 if number not in confirmedNumbers:
                     confirmedNumbers.append(number);
+
+                if number>max_number or ((window_end >= max_number) and len(confirmedNumbers) == max_number):
+                    logging.info('All numbers received:')
+                    print confirmedNumbers
+                    return
                 
                 if(len(sentNumbers) > 0):
                     sentNumbers.pop(0)
@@ -117,21 +121,21 @@ class waitForConfirmation(threading.Thread):
 
               
             except:
-                # j = 1
-                # while j <= window_end:
-                #     if j not in confirmedNumbers:
-                #         break
-                #     j = j+1
-                #     print("j: " + str(j))
-                # if(j > max_number):
-                #     return
-                # number = j
-                if(len(sentNumbers) > 0):
-                    number = sentNumbers[0];
-                    sentNumbers.pop(0)
+                j = 1
+                while j <= window_end:
+                    if j not in confirmedNumbers:
+                        break
+                    j = j+1
+                    print("j: " + str(j))
+                if(j > max_number):
+                    return
+                number = j
+                # if(len(sentNumbers) > 0):
+                    # number = sentNumbers[0];
+                    # sentNumbers.pop(0)
 
-                    logging.info("timeout" + str(number))
-                    sendNumber(number)
+                logging.info("timeout" + str(number))
+                sendNumber(number)
                    
 
 
@@ -154,9 +158,25 @@ i=1;
 initial_window_start = window_start
 initial_window_end = window_end
 
+
+# class init_send_number(threading.Thread):
+#     def __init__(self):
+#       threading.Thread.__init__(self)
+#       # self.threadID = threadID
+#       # self.name = name
+#       # self.counter = counter
+#       # number = i
+
+#     def run(self):
 for i in range(initial_window_start, initial_window_end+1):
     sendNumber(i)
-    
+
+
+# thread0 = init_send_number()
+# thread0.start()
+# threads.append(thread0)
+# thread0.join()
+
 
 thread1 = waitForConfirmation()
 thread1.start();
